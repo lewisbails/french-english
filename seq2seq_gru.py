@@ -13,7 +13,7 @@ import numpy as np
 import re
 
 batch_size = 64  # Batch size for training.
-epochs = 100  # Number of epochs to train for.
+epochs = 2  # Number of epochs to train for.
 latent_dim = 512  # Latent dimensionality of the encoding space.
 num_samples = 10000  # Number of samples to train on.
 # Path to the data txt file on disk.
@@ -119,7 +119,7 @@ decoder_input_data = np.zeros(
         (len(input_texts),max_decoder_seq_length),
         dtype='float64')
 decoder_target_data = np.zeros(
-        (len(input_texts),max_decoder_seq_length),
+        (len(input_texts),max_decoder_seq_length,num_decoder_tokens),
         dtype='float64')
 
 for i,(input_text,target_text) in enumerate(zip(input_texts,target_texts)):
@@ -132,7 +132,7 @@ for i,(input_text,target_text) in enumerate(zip(input_texts,target_texts)):
             word = '<UNKNOWN>'
         decoder_input_data[i,t]=target_token_index[word]
         if t>0:
-            decoder_target_data[i,t-1]=target_token_index[word]
+            decoder_target_data[i,t-1,target_token_index[word]]=1
             
 # GRU Encoder
 encoder_inputs = Input(shape=(None,))
